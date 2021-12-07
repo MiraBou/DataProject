@@ -1,7 +1,3 @@
 
 input/creditcard.csv
-src/models/aggregator_model.py
-src/models/decision_tree_model.py
-src/models/base_model.py
-src/models/svc_model.py
-src/models/estimator_interface.py
+
