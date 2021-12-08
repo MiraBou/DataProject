@@ -13,9 +13,9 @@ from src.utils import PlotUtils
 
 
 class TrainingPipeline:
-    def __init__(self):
-        df = pd.read_csv(DATASET_PATH)
-        df.drop('Time', axis=1, inplace=True)
+    def __init__(self,df):
+        #df = pd.read_csv(DATASET_PATH)
+        #df.drop('Time', axis=1, inplace=True)
 
         features = df.drop('Class', axis=1).values
         y = df['Class'].values
@@ -31,8 +31,8 @@ class TrainingPipeline:
 
     def train(self, serialize: bool = True, model_name: str = 'model.joblib'):
         dt_model = DecisionTreeModel()
-        svc_model = SVCModel()
-        self.model = AggregatorModel(models=[dt_model,svc_model])
+        #svc_model = SVCModel()
+        self.model = AggregatorModel(models=[dt_model])
 
         self.model.fit(
             self.x_train,

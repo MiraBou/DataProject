@@ -2,7 +2,6 @@ import time
 import streamlit as st
 import requests
 from PIL import Image
-
 from src.constants import INFERENCE_EXAMPLE, CM_PLOT_PATH,DATASET_PATH
 from src.training.train_pipeline import TrainingPipeline
 import pandas as pd
@@ -10,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import missingno as msno
+from src.utils import get_dtypes
 dataset= pd.read_csv(DATASET_PATH)
 
 st.title("Card Fraud Detection Dashboard")
@@ -19,56 +19,64 @@ sidebar_options = st.sidebar.selectbox(
     "Options",
     ("EDA", "Training", "Inference")
 )
-def CountPlot():
+def CountPlot(dataset):
     fig = plt.figure(figsize=(10, 4))
     sns.countplot(dataset.Class)
     st.pyplot(fig)
-def CorrPlot():
+def CorrPlot(dataset):
     fig=plt.figure(figsize=(8,8))
     heatmap = sns.heatmap(dataset.corr()[['Class']].sort_values(by='Class', ascending=False), vmin=-1, vmax=1, annot=True, cmap='BrBG')
     heatmap.set_title('Features Correlating with Class', fontdict={'fontsize':18}, pad=16);
     st.pyplot(fig)
 
-def DistribPlot():
-    fig = plt.figure(figsize=(25,5))
-    box_cols = dataset.columns
-    for i,c in enumerate(box_cols):
-        plt.subplot(1, len(box_cols), i+1);
-        sns.distplot(x=dataset[c]);
+def DistribPlot(dataset):
+    fig= plt.figure(figsize=(15, 8))
+    cols = dataset.drop("Class", axis=1).columns
+    for i,c in enumerate(cols):
+        plt.subplot(5, 6, i+1)
+        plt.hist(dataset[c])
         plt.title(c)
     st.pyplot(fig)
 
 
 
-
 if sidebar_options == "EDA":
-    '''st.header("Exploratory Data Analysis")
-
+    st.header("Exploratory Data Analysis")
     st.info("In this section, you are invited to create insightful graphs "
             "about the card fraud dataset that you were provided.")
+
+    st.markdown(''' > ## Data Types of Columns''')
+    col_types, num_cols, cat_cols = get_dtypes(dataset)
+    st.write(col_types)
+
     st.dataframe(dataset.head(10))
     st.write(dataset.describe())
     st.info("The dataset shape : ")
     st.write(dataset.shape)
-    nb_col= dataset.columns.size
-    nb_rows= len(dataset)
+    nb_col = dataset.shape[1]
+    nb_rows = dataset.shape[0]
     st.write('It contains %d columns and %d rows'%(nb_col,nb_rows))
+    st.markdown(''' > ## Values in the target Class''')
     st.write(dataset['Class'].value_counts())
     nb_Frauds = (dataset['Class']==0).sum()
     nb_NotFrauds = (dataset['Class']==1).sum()
-    st.write('Number of clean Transactions :%d ------- Number of frauds : %d' % (nb_NotFrauds, nb_Frauds))
+    st.write('Number of clean Transactions :%d ------- Number of frauds : %d' % ( nb_Frauds,nb_NotFrauds))
+
     #CountPlot() not showing the small amount of Class values equal to 1
-    st.write('missing values')
+
+    st.markdown(''' > ## Missing Data''')
     st.write(dataset.isna().sum())
 
     #Correlation Part
     st.header("Correlation")
     corr=dataset.corrwith(dataset['Class']).dropna()
     st.dataframe(corr)
-    CorrPlot()
+    CorrPlot(dataset)
 
     #Histogramms to display distibutions
-    DistribPlot()'''
+    DistribPlot(dataset)
+
+
 elif sidebar_options == "Training":
     st.header("Model Training")
     st.info("Before you proceed to training your model. Make sure you "
@@ -83,13 +91,13 @@ elif sidebar_options == "Training":
                ('Email', 'Home phone', 'Mobile phone'))
 
     st.write('You selected:', option)
-
+    
 
     if train:
         with st.spinner('Training model, please wait...'):
             #time.sleep(1) # delete
             try:
-                tp = TrainingPipeline()
+                tp = TrainingPipeline(dataset)
                 tp.train(serialize=serialize, model_name=name)
                 tp.render_confusion_matrix(plot_name=name)
                 accuracy, f1 = tp.get_model_perfomance()

@@ -32,3 +32,30 @@ class PlotUtils:
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
+
+def get_dtypes(dataset):
+        '''return column data types of a dataframe '''
+        cols = dict({})
+        data_types = [ 'int64', 'float64', 'bool', 'object' ]
+        for dtype in data_types:
+            filter = dataset.select_dtypes(include=dtype).columns.values
+            #st.write(filter)
+            if len(filter)>0:
+                cols.update({dtype: filter})
+
+        num_cols = []
+        cat_cols = []
+
+        for key, val in cols.items():
+            if key == 'float64':
+                num_cols.extend(val)
+            elif key == 'int64':
+                for cat in val:
+                    unique = len(dataset[cat].unique())/len(dataset[cat])
+                    if unique > 0.1 or len(dataset[cat].unique())>100:
+                        num_cols.append(cat)
+                    else:
+                        cat_cols.append(cat)
+            if key == 'object':
+                cat_cols.extend(val)
+        return cols, num_cols, cat_cols

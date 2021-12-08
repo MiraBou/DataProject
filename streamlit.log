@@ -664,3 +664,142 @@ C:\Users\ADMIN\Desktop\DataProject\src\training\train_pipeline.py:67: UserWarnin
     model_names=tp.models.joblib
 AttributeError: 'list' object has no attribute 'joblib'
 
+2021-12-08 00:12:35.340 Traceback (most recent call last):
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\type_util.py", line 379, in data_frame_to_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\table.pxi", line 1650, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\pyarrow\pandas_compat.py", line 594, in dataframe_to_arrays
+    arrays = [convert_column(c, f)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\pyarrow\pandas_compat.py", line 594, in <listcomp>
+    arrays = [convert_column(c, f)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\pyarrow\pandas_compat.py", line 581, in convert_column
+    raise e
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\pyarrow\pandas_compat.py", line 575, in convert_column
+    result = pa.array(col, type=type_, from_pandas=True, safe=safe)
+  File "pyarrow\array.pxi", line 311, in pyarrow.lib.array
+  File "pyarrow\array.pxi", line 83, in pyarrow.lib._ndarray_to_array
+  File "pyarrow\error.pxi", line 99, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: ("Could not convert dtype('float64') with type numpy.dtype[float64]: did not recognize Python value type when inferring an Arrow data type", 'Conversion failed for column Time with type object')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\script_runner.py", line 354, in _run_script
+    exec(code, module.__dict__)
+  File "C:\Users\ADMIN\Desktop\DataProject\dashboard.py", line 48, in <module>
+    st.write(pd.DataFrame(dataset.dtypes, columns=['Data Type']).T)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\elements\write.py", line 182, in write
+    self.dg.dataframe(arg)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\elements\dataframe_selector.py", line 85, in dataframe
+    return self.dg._arrow_dataframe(data, width, height)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\elements\arrow.py", line 82, in _arrow_dataframe
+    marshall(proto, data, default_uuid)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\elements\arrow.py", line 160, in marshall
+    proto.data = type_util.data_frame_to_bytes(df)
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\type_util.py", line 384, in data_frame_to_bytes
+    raise errors.NumpyDtypeException(
+streamlit.errors.NumpyDtypeException: 
+Unable to convert `numpy.dtype` to `pyarrow.DataType`.
+This is likely due to a bug in Arrow (see https://issues.apache.org/jira/browse/ARROW-14087).
+As a temporary workaround, you can convert the DataFrame cells to strings with `df.astype(str)`.
+
+
+2021-12-08 00:13:09.473 Traceback (most recent call last):
+  File "C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\streamlit\script_runner.py", line 354, in _run_script
+    exec(code, module.__dict__)
+  File "C:\Users\ADMIN\Desktop\DataProject\dashboard.py", line 48, in <module>
+    col_types, num_cols, cat_cols = get_dtypes(dataset)
+  File "C:\Users\ADMIN\Desktop\DataProject\src\utils.py", line 41, in get_dtypes
+    filter = df.select_dtypes(include=dtype).columns.values
+NameError: name 'df' is not defined
+
+C:\Users\ADMIN\Desktop\DataProject\src\training\train_pipeline.py:67: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
+C:\Users\ADMIN\.virtualenvs\DataProject-MMMqYhhB\lib\site-packages\seaborn\distributions.py:2619: FutureWarning: `distplot` is a deprecated function and will be removed in a future version. Please adapt your code to use either `displot` (a figure-level function with similar flexibility) or `histplot` (an axes-level function for histograms).
+  warnings.warn(msg, FutureWarning)
