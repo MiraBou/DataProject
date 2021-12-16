@@ -9,6 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import missingno as msno
+from sklearn.preprocessing import PowerTransformer
+from sklearn.model_selection import train_test_split
 from src.utils import get_dtypes
 dataset= pd.read_csv(DATASET_PATH)
 
@@ -23,6 +25,7 @@ def CountPlot(dataset):
     fig = plt.figure(figsize=(10, 4))
     sns.countplot(dataset.Class)
     st.pyplot(fig)
+
 def CorrPlot(dataset):
     fig=plt.figure(figsize=(8,8))
     heatmap = sns.heatmap(dataset.corr()[['Class']].sort_values(by='Class', ascending=False), vmin=-1, vmax=1, annot=True, cmap='BrBG')
@@ -30,21 +33,38 @@ def CorrPlot(dataset):
     st.pyplot(fig)
 
 def DistribPlot(dataset):
-    fig= plt.figure(figsize=(15, 8))
-    cols = dataset.drop("Class", axis=1).columns
+    fig= plt.figure(figsize=(30, 15))
+    if("Class" in dataset.columns):
+     cols = dataset.drop("Class", axis=1).columns
+    else :
+     cols = dataset.columns
     for i,c in enumerate(cols):
         plt.subplot(5, 6, i+1)
         plt.hist(dataset[c])
         plt.title(c)
     st.pyplot(fig)
 
+def SplitDataset(dataset):
+    y = dataset['Class']
+    features = dataset.drop(columns=['Class'])
+    X_train,X_test,y_train,y_test = train_test_split(features,y,
+        test_size=0.2,
+        random_state=0
+    )
+    return(X_train,X_test,y_train,y_test)
 
+def Standardization(X_train,X_test):
+    power = PowerTransformer(method='yeo-johnson')
+    cols = dataset.drop("Class", axis=1).columns
+    data_standarized = power.fit_transform(X_train)
+    data_test_standarized = power.transform(X_test)
+    X_train_standarized=pd.DataFrame(data=data_standarized , columns=cols)
+    X_test_standarized=pd.DataFrame(data=data_test_standarized , columns=cols)
+    return(X_train_standarized,X_test_standarized)
 
 if sidebar_options == "EDA":
     st.header("Exploratory Data Analysis")
-    st.info("In this section, you are invited to create insightful graphs "
-            "about the card fraud dataset that you were provided.")
-
+    st.header("Exploratory Data Analysis")
     st.markdown(''' > ## Data Types of Columns''')
     col_types, num_cols, cat_cols = get_dtypes(dataset)
     st.write(col_types)
@@ -62,6 +82,7 @@ if sidebar_options == "EDA":
     nb_NotFrauds = (dataset['Class']==1).sum()
     st.write('Number of clean Transactions :%d ------- Number of frauds : %d' % ( nb_Frauds,nb_NotFrauds))
 
+
     #CountPlot() not showing the small amount of Class values equal to 1
 
     st.markdown(''' > ## Missing Data''')
@@ -75,38 +96,54 @@ if sidebar_options == "EDA":
 
     #Histogramms to display distibutions
     DistribPlot(dataset)
+    #dataset.to_csv(PREPARED_DATASET_PATH)
+    st.header("Data Cleaning ")
+    st.markdown(''' > ## Splitting''')
+    X_train,X_test,y_train,y_test=SplitDataset(dataset)
+    st.write('It contains %d of train samples and %d test samples'%(X_train.shape[0],X_test.shape[0]))
 
-
+    st.markdown(''' > ## Standardization''')
+    X_train_standarized,X_test_standarized=Standardization(X_train,X_test)
+    st.write(X_train_standarized.head(10))
+    st.write(X_test_standarized.head(10))
+    st.write("Plotting the new normalized distributions of features")
+    DistribPlot(X_train_standarized)
 elif sidebar_options == "Training":
     st.header("Model Training")
     st.info("Before you proceed to training your model. Make sure you "
             "have checked your training pipeline code and that it is set properly.")
 
-    name = st.text_input('Model name', placeholder='decisiontree')
-    print("ll", name) # delete
-    serialize = st.checkbox('Save model')
-    train = st.button('Train Model')
 
-    option = st.selectbox('How would you like to be contacted?',
-               ('Email', 'Home phone', 'Mobile phone'))
+    train = False
+    selected_options = st.multiselect('Choose Your model(s)?',
+                             ['decisiontree', 'svc', 'randomforest'])
 
-    st.write('You selected:', option)
-    
+
+    st.write('You selected:')
+
+
+    for m in selected_options:
+        st.markdown(f"- {m}")
+    if len(selected_options) != 0:
+            train = st.button('Train Model')
+            serialize = st.checkbox('Save model')
+            options =','.join(selected_options)
+
 
     if train:
         with st.spinner('Training model, please wait...'):
-            #time.sleep(1) # delete
+            time.sleep(1)
             try:
-                tp = TrainingPipeline(dataset)
-                tp.train(serialize=serialize, model_name=name)
-                tp.render_confusion_matrix(plot_name=name)
+                tp = TrainingPipeline()
+                tp.train(serialize=serialize, model_name=options)
+                tp.render_confusion_matrix(plot_name=options)
                 accuracy, f1 = tp.get_model_perfomance()
-                col1, col2 = st.columns(2)
+                #col1, col2 = st.columns(2)
 
-                col1.metric(label="Accuracy score", value=str(round(accuracy, 4)))
-                col2.metric(label="F1 score", value=str(round(f1, 4)))
-
-                st.image(Image.open(CM_PLOT_PATH))
+                #col1.metric(label="Accuracy score", value=str(round(accuracy, 4)))
+                #col2.metric(label="F1 score", value=str(round(f1, 4)))
+                #cm_plot_path = str(CM_PLOT_PATH).replace('cm_plot.png', options+'.png')
+                #st.image(Image.open(CM_PLOT_PATH))
 
             except Exception as e:
                 st.error('Failed to train model!')
@@ -118,6 +155,16 @@ else:
     st.info("This section simplifies the inference process. "
             "You can tweak the values of feature 1, 2, 19, "
             "and the transaction amount and observe how your model reacts to these changes.")
+    st.markdown(''' > ## History''')
+
+    trans = requests.get(
+        "http://localhost:5000/api/inference"
+    ).json()
+    st.table(trans)
+
+    st.markdown(''' > ## New Fraud Inference''')
+
+
     feature_11 = st.slider('Transaction Feature 11', -10.0, 10.0, step=0.001, value=-4.075)
     feature_13 = st.slider('Transaction Feature 13', -10.0, 10.0, step=0.001, value=0.963)
     feature_15 = st.slider('Transaction Feature 15', -10.0, 10.0, step=0.001, value=2.630)
@@ -134,7 +181,7 @@ else:
             time.sleep(1)
             try:
                 result = requests.post(
-                    'http://localhost:3333/api/inference',
+                    'http://localhost:5000/api/inference',
                     json=INFERENCE_EXAMPLE
                 )
                 if int(int(result.text) == 1):
@@ -143,6 +190,11 @@ else:
                 else:
                     st.success('Done!')
                     st.metric(label="Status", value="Transaction: Clear")
+
+
+
             except Exception as e:
                 st.error('Failed to call Inference API!')
+                st.write(e)
                 st.exception(e)
+
