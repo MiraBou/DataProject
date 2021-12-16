@@ -37,7 +37,6 @@ def run_inference():
         features = np.array(request.json).reshape(1, -1)
         prediction = model.predict(features)
         target=prediction[0]
-        #store data on SQLite Table
         features = [str(x) for x in features[0]]
         trans = Transaction(features=features, prediction=str(target))
         db.session.add(trans)
@@ -45,6 +44,7 @@ def run_inference():
         return str(prediction[0])
     elif request.method == 'GET':
         transactions = Transaction.query.all()
+        #Transactions list of responses transaction casted to string having same structure as json
         strc="["
         size=len(transactions)
         i=0

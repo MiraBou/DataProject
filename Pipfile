@@ -17,6 +17,8 @@ Pillow = "*"
 pylint = "*"
 pytest = "*"
 black = "*"
+seaborn = "*"
+missingno = "*"
 
 [dev-packages]
 
