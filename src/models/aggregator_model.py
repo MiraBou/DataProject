@@ -22,4 +22,3 @@ class AggregatorModel(BaseModel):
     def load(self, model_path: str):
         models = load(model_path).models
         self.models = models
-

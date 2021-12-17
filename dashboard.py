@@ -2,25 +2,18 @@ import time
 import streamlit as st
 import requests
 from PIL import Image
-from src.constants import INFERENCE_EXAMPLE, CM_PLOT_PATH,DATASET_PATH
+from src.constants import INFERENCE_EXAMPLE,DATASET_PATH, CM_PLOT_PATH,SCALER_PATH
 from src.training.train_pipeline import TrainingPipeline
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import missingno as msno
-from sklearn.preprocessing import PowerTransformer
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from src.utils import get_dtypes
-dataset= pd.read_csv(DATASET_PATH)
+from joblib import dump
 
-st.title("Card Fraud Detection Dashboard")
-st.sidebar.title("Data Themes")
-
-sidebar_options = st.sidebar.selectbox(
-    "Options",
-    ("EDA", "Training", "Inference")
-)
 def CountPlot(dataset):
     fig = plt.figure(figsize=(10, 4))
     sns.countplot(dataset.Class)
@@ -35,9 +28,9 @@ def CorrPlot(dataset):
 def DistribPlot(dataset):
     fig= plt.figure(figsize=(30, 15))
     if("Class" in dataset.columns):
-     cols = dataset.drop("Class", axis=1).columns
+        cols = dataset.drop("Class", axis=1).columns
     else :
-     cols = dataset.columns
+        cols = dataset.columns
     for i,c in enumerate(cols):
         plt.subplot(5, 6, i+1)
         plt.hist(dataset[c])
@@ -48,23 +41,35 @@ def SplitDataset(dataset):
     y = dataset['Class']
     features = dataset.drop(columns=['Class'])
     X_train,X_test,y_train,y_test = train_test_split(features,y,
-        test_size=0.2,
-        random_state=0
-    )
+                                                     test_size=0.2,
+                                                     random_state=0
+                                                     )
     return(X_train,X_test,y_train,y_test)
 
-def Standardization(X_train,X_test):
-    power = PowerTransformer(method='yeo-johnson')
+def Scaling(X_train,X_test):
+    scaler = StandardScaler()
     cols = dataset.drop("Class", axis=1).columns
-    data_standarized = power.fit_transform(X_train)
-    data_test_standarized = power.transform(X_test)
-    X_train_standarized=pd.DataFrame(data=data_standarized , columns=cols)
-    X_test_standarized=pd.DataFrame(data=data_test_standarized , columns=cols)
-    return(X_train_standarized,X_test_standarized)
+    data_scaled = scaler.fit_transform(X_train)
+    data_test_scaled = scaler.transform(X_test)
+    X_train_scaled=pd.DataFrame(data=data_scaled , columns=cols)
+    X_test_scaled=pd.DataFrame(data=data_test_scaled , columns=cols)
+    dump(scaler,SCALER_PATH)
+    return(X_train_scaled,X_test_scaled)
+
+dataset= pd.read_csv(DATASET_PATH)
+
+st.title("Card Fraud Detection Dashboard")
+st.sidebar.title("Data Themes")
+
+sidebar_options = st.sidebar.selectbox(
+    "Options",
+    ("EDA", "Training", "Inference")
+)
+
 
 if sidebar_options == "EDA":
     st.header("Exploratory Data Analysis")
-    st.header("Exploratory Data Analysis")
+    st.write("wiwi")
     st.markdown(''' > ## Data Types of Columns''')
     col_types, num_cols, cat_cols = get_dtypes(dataset)
     st.write(col_types)
@@ -96,18 +101,20 @@ if sidebar_options == "EDA":
 
     #Histogramms to display distibutions
     DistribPlot(dataset)
-    #dataset.to_csv(PREPARED_DATASET_PATH)
     st.header("Data Cleaning ")
     st.markdown(''' > ## Splitting''')
     X_train,X_test,y_train,y_test=SplitDataset(dataset)
     st.write('It contains %d of train samples and %d test samples'%(X_train.shape[0],X_test.shape[0]))
 
-    st.markdown(''' > ## Standardization''')
-    X_train_standarized,X_test_standarized=Standardization(X_train,X_test)
-    st.write(X_train_standarized.head(10))
-    st.write(X_test_standarized.head(10))
+    st.markdown(''' > ## Scaling''')
+    X_train_scaled,X_test_scaled=Scaling(X_train,X_test)
+    st.write(X_train_scaled.head(5))
+    st.write(X_test_scaled.head(5))
+    st.write(X_test_scaled.describe())
     st.write("Plotting the new normalized distributions of features")
-    DistribPlot(X_train_standarized)
+    DistribPlot(X_train_scaled)
+    #dataset.to_csv(PREPARED_DATASET_PATH)
+
 elif sidebar_options == "Training":
     st.header("Model Training")
     st.info("Before you proceed to training your model. Make sure you "
@@ -134,10 +141,10 @@ elif sidebar_options == "Training":
         with st.spinner('Training model, please wait...'):
             time.sleep(1)
             try:
-                tp = TrainingPipeline()
+                tp = TrainingPipeline(X_train_scaled,X_test_scaled,y_train,y_test)
                 tp.train(serialize=serialize, model_name=options)
-                tp.render_confusion_matrix(plot_name=options)
-                accuracy, f1 = tp.get_model_perfomance()
+                #tp.render_confusion_matrix(plot_name=options)
+                #maccuracy, f1 = tp.get_model_perfomance()
                 #col1, col2 = st.columns(2)
 
                 #col1.metric(label="Accuracy score", value=str(round(accuracy, 4)))

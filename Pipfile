@@ -19,6 +19,7 @@ pytest = "*"
 black = "*"
 seaborn = "*"
 missingno = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 

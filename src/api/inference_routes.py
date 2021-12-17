@@ -1,12 +1,13 @@
 from flask import Blueprint, request
-from src.constants import AGGREGATOR_MODEL_PATH
+from src.constants import AGGREGATOR_MODEL_PATH,SCALER_PATH
 from src.models.aggregator_model import AggregatorModel
 import numpy as np
 from src.api.database import db
-
+from joblib import load
 
 model = AggregatorModel()
 model.load(AGGREGATOR_MODEL_PATH)
+scaler = load(SCALER_PATH)
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 class Transaction(db.Model):
@@ -35,16 +36,18 @@ class Transaction(db.Model):
 def run_inference():
     if request.method == 'POST':
         features = np.array(request.json).reshape(1, -1)
+        features_scaled = scaler.transform(features)
+        #prediction = model.predict(features)
         prediction = model.predict(features)
         target=prediction[0]
-        features = [str(x) for x in features[0]]
-        trans = Transaction(features=features, prediction=str(target))
+        #features = [str(x) for x in features[0]]
+        features_scaled = [str(x) for x in features_scaled[0]]
+        trans = Transaction(features=features_scaled, prediction=str(target))
         db.session.add(trans)
         db.session.commit()
-        return str(prediction[0])
+        return str(target)
     elif request.method == 'GET':
         transactions = Transaction.query.all()
-        #Transactions list of responses transaction casted to string having same structure as json
         strc="["
         size=len(transactions)
         i=0

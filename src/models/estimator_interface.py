@@ -9,7 +9,7 @@ class EstimatorInterface:
         pass
 
     @staticmethod
-    def save(model: object,path: str = 'model.joblib'):
+    def save(model: object, path: str = 'model.joblib'):
         pass
 
     @staticmethod

@@ -9,7 +9,7 @@ OUTPUT_PATH = PARENT_PATH / "output/"
 DECISION_TREE_MODEL_PATH = OUTPUT_PATH / "models/decisiontree.joblib"
 SVC_MODEL_PATH = OUTPUT_PATH / "models/svc.joblib"
 RANDOM_FOREST_MODEL_PATH = OUTPUT_PATH / "models/randomforest.joblib"
-
+SCALER_PATH = OUTPUT_PATH / "scaler/standardscaler.joblib"
 AGGREGATOR_MODEL_PATH = OUTPUT_PATH / "models/aggregator_model.joblib"
 CM_PLOT_PATH = OUTPUT_PATH / "plots/cm_plot.png"
 
