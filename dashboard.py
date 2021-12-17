@@ -67,7 +67,6 @@ X_train,X_test,y_train,y_test=SplitDataset(dataset)
 
 if sidebar_options == "EDA":
     st.header("Exploratory Data Analysis")
-    st.write("wiwi")
     st.markdown(''' > ## Data Types of Columns''')
     col_types, num_cols, cat_cols = get_dtypes(dataset)
     st.write(col_types)

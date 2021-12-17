@@ -6,12 +6,13 @@
 C:\Users\ADMIN\.virtualenvs\ProjectData-xO4aUWLb\lib\site-packages\flask_sqlalchemy\__init__.py:872: FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
   warnings.warn(FSADeprecationWarning(
  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-127.0.0.1 - - [17/Dec/2021 03:34:59] "GET /api/inference HTTP/1.1" 200 -
-127.0.0.1 - - [17/Dec/2021 03:35:19] "GET /api/inference HTTP/1.1" 200 -
-127.0.0.1 - - [17/Dec/2021 03:35:56] "GET /api/inference HTTP/1.1" 200 -
+127.0.0.1 - - [17/Dec/2021 10:37:51] "GET /api/inference HTTP/1.1" 200 -
+127.0.0.1 - - [17/Dec/2021 10:38:53] "GET /api/inference HTTP/1.1" 200 -
+127.0.0.1 - - [17/Dec/2021 10:39:00] "GET /api/inference HTTP/1.1" 200 -
 C:\Users\ADMIN\.virtualenvs\ProjectData-xO4aUWLb\lib\site-packages\sklearn\base.py:445: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
   warnings.warn(
 C:\Users\ADMIN\.virtualenvs\ProjectData-xO4aUWLb\lib\site-packages\sklearn\base.py:445: UserWarning: X does not have valid feature names, but DecisionTreeClassifier was fitted with feature names
   warnings.warn(
-127.0.0.1 - - [17/Dec/2021 03:36:00] "POST /api/inference HTTP/1.1" 200 -
-127.0.0.1 - - [17/Dec/2021 03:36:30] "GET /api/inference HTTP/1.1" 200 -
+127.0.0.1 - - [17/Dec/2021 10:39:03] "POST /api/inference HTTP/1.1" 200 -
+127.0.0.1 - - [17/Dec/2021 10:39:27] "GET /api/inference HTTP/1.1" 200 -
+127.0.0.1 - - [17/Dec/2021 11:01:11] "GET /api/inference HTTP/1.1" 200 -

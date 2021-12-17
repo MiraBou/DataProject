@@ -1,9 +1,10 @@
-from flask import Blueprint, request
+from flask import Blueprint, request,jsonify
 from src.constants import AGGREGATOR_MODEL_PATH,SCALER_PATH
 from src.models.aggregator_model import AggregatorModel
 import numpy as np
 from src.api.database import db
 from joblib import load
+
 
 model = AggregatorModel()
 model.load(AGGREGATOR_MODEL_PATH)
@@ -19,6 +20,16 @@ class Transaction(db.Model):
     v3 = db.Column(db.String(100))
     prediction = db.Column(db.String(100))
 
+    def serialize(self):
+        return {
+            'id'         : self.id,
+            'v0': self.v0,
+            'v1'  : self.v1,
+            'v2'  : self.v2,
+            'Amount'  : self.v3,
+            'prediction'  : self.prediction
+
+        }
 
     def __init__(self, features, prediction):
         self.v0 = features[11]
@@ -29,7 +40,7 @@ class Transaction(db.Model):
 
 
     def __repr__(self):
-        return f'"id":{self.id}, "V11":{self.v0}, "V15":{self.v1},"V13":{self.v3}, "Amount":{self.v2},  "prediction":{self.prediction}'
+        return f'<Transaction %r>'%(self.id)
 
 @blueprint.route('/')
 @blueprint.route('/inference', methods=['GET', 'POST'])
@@ -38,28 +49,14 @@ def run_inference():
         features = np.array(request.json).reshape(1, -1)
         features_scaled = scaler.transform(features)
         prediction = model.predict(features_scaled)
-
         target=prediction[0]
-        #print(target)
-        features_scaled = [str(x) for x in features_scaled[0]]
-
-        trans = Transaction(features=features_scaled, prediction=str(target))
-
+        features = [str(x) for x in features[0]]
+        trans = Transaction(features=features, prediction=str(target))
         db.session.add(trans)
         db.session.commit()
         return str(prediction[0])
     elif request.method == 'GET':
-
         transactions = Transaction.query.all()
-        strc="["
-        size=len(transactions)
-        i=0
-        for d in transactions:
-            strc=strc+"{"+str(d)+"}"
-            if i+1!=size:
-                strc+=','
-            i+=1
-
-        strc+="]"
-        return strc
+        result=[d.serialize() for d in transactions]
+        return jsonify(result)
 
