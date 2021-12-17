@@ -13,7 +13,15 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from src.utils import get_dtypes
 from joblib import dump
+dataset= pd.read_csv(DATASET_PATH)
 
+st.title("Card Fraud Detection Dashboard")
+st.sidebar.title("Data Themes")
+
+sidebar_options = st.sidebar.selectbox(
+    "Options",
+    ("EDA", "Training", "Inference")
+)
 def CountPlot(dataset):
     fig = plt.figure(figsize=(10, 4))
     sns.countplot(dataset.Class)
@@ -27,19 +35,16 @@ def CorrPlot(dataset):
 
 def DistribPlot(dataset):
     fig= plt.figure(figsize=(30, 15))
-    if("Class" in dataset.columns):
-        cols = dataset.drop("Class", axis=1).columns
-    else :
-        cols = dataset.columns
+    cols = dataset.columns
     for i,c in enumerate(cols):
-        plt.subplot(5, 6, i+1)
+        plt.subplot(7,5, i+1)
         plt.hist(dataset[c])
         plt.title(c)
     st.pyplot(fig)
 
 def SplitDataset(dataset):
     y = dataset['Class']
-    features = dataset.drop(columns=['Class'])
+    features = dataset.drop(columns=['Class','Time'])
     X_train,X_test,y_train,y_test = train_test_split(features,y,
                                                      test_size=0.2,
                                                      random_state=0
@@ -48,7 +53,7 @@ def SplitDataset(dataset):
 
 def Scaling(X_train,X_test):
     scaler = StandardScaler()
-    cols = dataset.drop("Class", axis=1).columns
+    cols =  X_train.columns
     data_scaled = scaler.fit_transform(X_train)
     data_test_scaled = scaler.transform(X_test)
     X_train_scaled=pd.DataFrame(data=data_scaled , columns=cols)
@@ -56,15 +61,8 @@ def Scaling(X_train,X_test):
     dump(scaler,SCALER_PATH)
     return(X_train_scaled,X_test_scaled)
 
-dataset= pd.read_csv(DATASET_PATH)
 
-st.title("Card Fraud Detection Dashboard")
-st.sidebar.title("Data Themes")
-
-sidebar_options = st.sidebar.selectbox(
-    "Options",
-    ("EDA", "Training", "Inference")
-)
+X_train,X_test,y_train,y_test=SplitDataset(dataset)
 
 
 if sidebar_options == "EDA":
@@ -98,13 +96,14 @@ if sidebar_options == "EDA":
     corr=dataset.corrwith(dataset['Class']).dropna()
     st.dataframe(corr)
     CorrPlot(dataset)
-
     #Histogramms to display distibutions
-    DistribPlot(dataset)
+    df=dataset.drop(columns=['Class','Time'])
+    DistribPlot(df)
     st.header("Data Cleaning ")
     st.markdown(''' > ## Splitting''')
-    X_train,X_test,y_train,y_test=SplitDataset(dataset)
-    st.write('It contains %d of train samples and %d test samples'%(X_train.shape[0],X_test.shape[0]))
+    #X_train,X_test,y_train,y_test=SplitDataset(dataset)
+    #Cz it's done before entering the conditions
+    st.write('It contains %d of train samples and %d test samples'%(X_train.shape[1],X_test.shape[0]))
 
     st.markdown(''' > ## Scaling''')
     X_train_scaled,X_test_scaled=Scaling(X_train,X_test)
@@ -114,7 +113,8 @@ if sidebar_options == "EDA":
     st.write("Plotting the new normalized distributions of features")
     DistribPlot(X_train_scaled)
     #dataset.to_csv(PREPARED_DATASET_PATH)
-
+    ### assign to a X_test and X_train the new values of the scaled ones
+    X_train,X_test=X_train_scaled,X_test_scaled
 elif sidebar_options == "Training":
     st.header("Model Training")
     st.info("Before you proceed to training your model. Make sure you "
@@ -141,7 +141,8 @@ elif sidebar_options == "Training":
         with st.spinner('Training model, please wait...'):
             time.sleep(1)
             try:
-                tp = TrainingPipeline(X_train_scaled,X_test_scaled,y_train,y_test)
+
+                tp = TrainingPipeline(X_train,X_test,y_train,y_test)
                 tp.train(serialize=serialize, model_name=options)
                 #tp.render_confusion_matrix(plot_name=options)
                 #maccuracy, f1 = tp.get_model_perfomance()
@@ -167,6 +168,7 @@ else:
     trans = requests.get(
         "http://localhost:5000/api/inference"
     ).json()
+
     st.table(trans)
 
     st.markdown(''' > ## New Fraud Inference''')
@@ -191,17 +193,21 @@ else:
                     'http://localhost:5000/api/inference',
                     json=INFERENCE_EXAMPLE
                 )
-                if int(int(result.text) == 1):
-                    st.success('Done!')
-                    st.metric(label="Status", value="Transaction: Fraudulent")
-                else:
-                    st.success('Done!')
-                    st.metric(label="Status", value="Transaction: Clear")
+                try:
+                    int(result.text)
+                    if int(int(result.text) == 1):
+                        st.success('Done!')
+                        st.metric(label="Status", value="Transaction: Fraudulent")
+                    else:
+                        st.success('Done!')
+                        st.metric(label="Status", value="Transaction: Clear")
+
+                except ValueError:
+                    st.write('There is No saved trained Model ! You have to train the model first')
 
 
 
             except Exception as e:
                 st.error('Failed to call Inference API!')
-                st.write(e)
                 st.exception(e)
 

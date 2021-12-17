@@ -37,16 +37,19 @@ def run_inference():
     if request.method == 'POST':
         features = np.array(request.json).reshape(1, -1)
         features_scaled = scaler.transform(features)
-        #prediction = model.predict(features)
-        prediction = model.predict(features)
+        prediction = model.predict(features_scaled)
+
         target=prediction[0]
-        #features = [str(x) for x in features[0]]
+        #print(target)
         features_scaled = [str(x) for x in features_scaled[0]]
+
         trans = Transaction(features=features_scaled, prediction=str(target))
+
         db.session.add(trans)
         db.session.commit()
-        return str(target)
+        return str(prediction[0])
     elif request.method == 'GET':
+
         transactions = Transaction.query.all()
         strc="["
         size=len(transactions)

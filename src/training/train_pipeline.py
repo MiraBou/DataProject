@@ -11,26 +11,17 @@ from src.models.decision_tree_model import DecisionTreeModel
 from src.models.random_forest_model import RandomForestModel
 from src.models.svc_model import SVCModel
 from src.utils import PlotUtils
-
+import numpy as np
 
 class TrainingPipeline:
-    def __init__(self):
-        df = pd.read_csv(DATASET_PATH)
-        df.drop('Time', axis=1, inplace=True)
+    def __init__(self,X_train_scaled: np.ndarray,X_test_scaled: np.ndarray,y_train: np.ndarray,y_test: np.ndarray):
 
-        features = df.drop('Class', axis=1).values
-        y = df['Class'].values
-
-        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(
-            features,
-            y,
-            test_size=0.2,
-            random_state=0
-        )
+        self.x_train = X_train_scaled
+        self.x_test = X_test_scaled
+        self.y_train =y_train
+        self.y_test = y_test
 
         self.model = None
-
-
 
 
     def train(self, serialize: bool = True, model_name: str = 'model.joblib'):
@@ -45,7 +36,6 @@ class TrainingPipeline:
         for i in models:
             options.append(models_dict[i])
 
-        print(options)
 
         self.model = AggregatorModel(models=options)
 
