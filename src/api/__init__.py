@@ -4,7 +4,7 @@ from src.api.inference_routes import blueprint as inference_blueprint
 from src.api.database import db
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\ADMIN\\test3.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\ADMIN\\test4.db'
 app.config['JSON_SORT_KEYS'] = False
 db.init_app(app)
 

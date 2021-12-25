@@ -187,13 +187,14 @@ else:
     if infer:
         with st.spinner('Running inference...'):
             time.sleep(1)
+
             try:
-                result = requests.post(
-                    'http://localhost:5000/api/inference',
-                    json=INFERENCE_EXAMPLE
-                )
-                try:
-                    int(result.text)
+
+                    result = requests.post(
+                        'http://localhost:5000/api/inference',
+                        json=INFERENCE_EXAMPLE
+                    )
+
                     if int(int(result.text) == 1):
                         st.success('Done!')
                         st.metric(label="Status", value="Transaction: Fraudulent")
@@ -201,8 +202,6 @@ else:
                         st.success('Done!')
                         st.metric(label="Status", value="Transaction: Clear")
 
-                except ValueError:
-                    st.write('There is No saved trained Model ! You have to train the model first')
 
 
 

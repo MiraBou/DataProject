@@ -34,8 +34,8 @@ class Transaction(db.Model):
     def __init__(self, features, prediction):
         self.v0 = features[11]
         self.v1 = features[15]
-        self.v2 = features[28]
-        self.v3 = features[13]
+        self.v2 = features[13]
+        self.v3 = features[28]
         self.prediction=prediction
 
 
