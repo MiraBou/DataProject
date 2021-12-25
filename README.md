@@ -37,6 +37,9 @@ Each row of the dataset contains:
 The project contains by default:
 - A baseline `decision tree model` trained on the aforementioned dataset
 - An `API` that exposes an `inference endpoint` for predictions using the baseline model
-- A streamlit dashboard divided on three parts `(Exploratory Data Analysis, Training, Inference)`
+- A streamlit dashboard divided on three parts :
+        - `Exploratory Data Analysis: Analysis , Data Preparation 
+        - Training : Training on divers models (Decision tree ,Random forest , SVC)
+        -  Inference: Predictions on a data to test given by the user , Printing the previous predections of transactions` 
 
 Assignement given by https://gitlab.com/octomaroc_stage2022/python-data-assignment.git
